@@ -1,0 +1,6 @@
+[
+  {
+    "route": "/api/users",
+    "target": "http://localhost:5001"
+  }
+]
