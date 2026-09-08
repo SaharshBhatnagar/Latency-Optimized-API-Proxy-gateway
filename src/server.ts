@@ -16,9 +16,9 @@ app.use(cors());
 
 app.use(rateLimiter);
 
-app.use(cacheMiddleware);
-
 app.use(authenticate);
+
+app.use(cacheMiddleware);
 
 app.use(proxyRouter);
 

@@ -1,37 +1,30 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import { redisClient } from '../config/redisClient.js';
 
-export async function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
+export const cacheMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
     if (req.method !== 'GET') {
-        next();
-        return;
+        return next();
     }
 
-    const cacheKey = "cache:" + req.originalUrl;
+    const cacheKey = `cache:${req.originalUrl}`;
 
     try {
         const cachedData = await redisClient.get(cacheKey);
 
         if (cachedData) {
             res.setHeader("Content-Type", "application/json");
-            res.send(cachedData);
+            res.setHeader('X-Cache', 'HIT');
+            res.status(200).send(cachedData);
             return;
         }
 
-        const originalSend = res.send.bind(res);
-        
-        res.send = ((body: any): Response => {
-
-            redisClient.setEx(cacheKey, 120, body);
-
-            return originalSend(body);
-        }) as any;
-
+        res.locals.cacheKey = cacheKey;
+        res.setHeader('X-Cache', 'MISS');
         next();
     } 
     catch (err) {
-        console.error(err);
+        console.error('[CloudWatch Alert] Redis Cache Read Error:', err);
         next();
     }
 

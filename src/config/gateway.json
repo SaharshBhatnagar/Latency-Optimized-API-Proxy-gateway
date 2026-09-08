@@ -1,6 +1,6 @@
 [
   {
     "route": "/api/users",
-    "target": "http://localhost:5001"
+    "target": "https://jsonplaceholder.typicode.com"
   }
 ]

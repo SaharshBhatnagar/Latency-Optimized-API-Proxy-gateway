@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from 'express';
-import { verify } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 interface AuthRequest extends Request {
     user?: string | object,
@@ -21,7 +21,7 @@ export async function authenticate(req: AuthRequest, res: Response, next: NextFu
     }
 
     try {
-        const decoded = verify(token, process.env.JWT_SECRET as string);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
 
         req.user = decoded;
         next();
