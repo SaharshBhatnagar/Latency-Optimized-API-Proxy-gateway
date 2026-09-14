@@ -5,7 +5,17 @@ interface AuthRequest extends Request {
     user?: string | object,
 }
 
-export async function authenticate(req: AuthRequest, res: Response, next: NextFunction) {
+const PUBLIC_ROUTES = [
+    '/api/auth/login',
+    '/api/auth/register'
+];
+
+export async function authenticate(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    
+    if (PUBLIC_ROUTES.some(route => req.originalUrl.startsWith(route))) {
+        return next();
+    }
+    
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

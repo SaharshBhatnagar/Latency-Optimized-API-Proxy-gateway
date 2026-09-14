@@ -15,7 +15,7 @@ gatewayConfig.forEach((route: any) => {
         selfHandleResponse: true,
         pathRewrite: (path, req) => {
             const expressReq = req as Request;
-            return expressReq.originalUrl.replace('/api', '');
+            return expressReq.originalUrl;
         },
         on: {
             proxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {

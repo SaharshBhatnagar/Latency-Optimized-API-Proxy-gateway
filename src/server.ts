@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import express from 'express';
+import express, { type Request, type Response, type NextFunction } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-import { connectRedis } from './config/redisClient.js';
+import { connectRedis, redisClient } from './config/redisClient.js';
 import { rateLimiter } from './middlewares/rateLimiter.js';
 import { cacheMiddleware } from './middlewares/cache.js';
 import { authenticate } from './middlewares/auth.js';
@@ -12,7 +12,18 @@ const app = express();
 
 app.use(helmet());
 
-app.use(cors());
+app.use(cors({
+    exposedHeaders: ['X-Cache']
+}));
+
+app.use(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        await redisClient.incr('gateway:total_requests');
+    } catch (err) {
+        console.error('Telemetry logging error:', err);
+    }
+    next();
+});
 
 app.use(rateLimiter);
 
