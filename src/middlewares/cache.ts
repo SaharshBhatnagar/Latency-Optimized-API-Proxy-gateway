@@ -7,10 +7,6 @@ export const cacheMiddleware = async (req: Request, res: Response, next: NextFun
         return next();
     }
 
-    if (req.originalUrl.includes('/metrics')) {
-        return next();
-    }
-
     const cacheKey = `cache:${req.originalUrl}`;
 
     try {
@@ -18,11 +14,16 @@ export const cacheMiddleware = async (req: Request, res: Response, next: NextFun
 
         if (cachedData) {
 
-            await redisClient.incr('gateway:cache_hits');
+            const hits = await redisClient.incr('gateway:cache_hits');
+            const total = await redisClient.get('gateway:total_requests');
+
+            const parsedData = JSON.parse(cachedData);
+            parsedData.CacheHits = hits;
+            parsedData.totalRequest = parseInt(total || '0', 10);
 
             res.setHeader("Content-Type", "application/json");
             res.setHeader('X-Cache', 'HIT');
-            res.status(200).send(cachedData);
+            res.status(200).send(JSON.stringify(parsedData));
             return;
         }
 

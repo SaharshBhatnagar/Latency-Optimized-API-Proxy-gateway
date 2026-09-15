@@ -31,6 +31,16 @@ app.use(authenticate);
 
 app.use(cacheMiddleware);
 
+app.delete('/api/cache', async (req, res) => {
+    try {
+        await redisClient.flushAll();
+        res.status(200).json({ message: "Redis cache completely cleared" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to flush Redis" });
+    }
+});
+
 app.use(proxyRouter);
 
 const PORT = process.env.PORT ?? 8000;

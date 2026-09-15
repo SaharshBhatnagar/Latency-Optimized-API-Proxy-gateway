@@ -7,7 +7,8 @@ interface AuthRequest extends Request {
 
 const PUBLIC_ROUTES = [
     '/api/auth/login',
-    '/api/auth/register'
+    '/api/auth/register',
+    '/api/auth/reset-password'
 ];
 
 export async function authenticate(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
