@@ -15,7 +15,7 @@ Once the server is running, the gateway intercepts requests and dynamically mana
 ---
 
 ### Prerequisites
-Make sure you have Node.js and npm installed. You will also need a local Redis instance running (or an accessible ElastiCache endpoint) for the caching layer.
+Make sure you have Node.js and npm installed. You will also need a local Redis instance and  ensure the frontend and Backend services are running locally on your machine.
 
 ## Getting Started
 
@@ -70,18 +70,18 @@ Make sure you have Node.js and npm installed. You will also need a local Redis i
 
 ### Docker Deployment
 
-    The proxy can be run as a container by mapping the ports and providing an environment variable file:
+The proxy can be run as a container by mapping the ports and providing an environment variable file:
 
-    ```Bash
-    docker build -t latency-optimized-api-proxy-gateway .
-    docker run -p 8000:8000 --env-file .env latency-optimized-api-proxy-gateway
-    ```
+```Bash
+docker build -t latency-optimized-api-proxy-gateway .
+docker run -p 8000:8000 --env-file .env latency-optimized-api-proxy-gateway
+```
 
-    If you need to connect the Docker container to a local backend network, run it via docker-compose:
+If you need to connect the Docker container to a local backend network, run it via docker-compose:
 
-    ```Bash
-    docker compose up -d gateway
-    ```
+```Bash
+docker compose up -d gateway
+```
 
 ## Directory Structure
 
@@ -124,6 +124,7 @@ Make sure you have Node.js and npm installed. You will also need a local Redis i
 
 This gateway proxy is one component of a complete cloud-native ecosystem. You can explore the other microservices in this architecture here:
 
-* **Frontend:** [Repo-Link](https://github.com/SaharshBhatnagar/Latency-optimized-API-Proxy-frontend)
-* **Backend:** [Repo-Link](https://github.com/SaharshBhatnagar/Latency-optimized-API-Proxy-frontend)
+* **Frontend:** [Dashboard Repository](https://github.com/SaharshBhatnagar/Latency-optimized-API-Proxy-frontend)
+
+* **Backend:** [Latency Optimized API Proxy Backend](https://github.com/SaharshBhatnagar/Latency-optimized-API-Proxy-backend)
 
