@@ -2,17 +2,17 @@ import { type Request, type Response, type NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 interface AuthRequest extends Request {
-    user?: string | object,
+    user?: string | object;
 }
 
 const PUBLIC_ROUTES = [
     '/api/auth/login',
     '/api/auth/register',
+    '/api/auth/forgot-password',
     '/api/auth/reset-password'
 ];
 
 export async function authenticate(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
-    
     if (PUBLIC_ROUTES.some(route => req.originalUrl.startsWith(route))) {
         return next();
     }
@@ -33,13 +33,9 @@ export async function authenticate(req: AuthRequest, res: Response, next: NextFu
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-
         req.user = decoded;
         next();
-    }
-
-    catch (err) {
+    } catch {
         res.status(403).json({ error: 'Invalid token' });
     }
-
 }

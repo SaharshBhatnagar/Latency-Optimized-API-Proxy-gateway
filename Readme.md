@@ -4,6 +4,8 @@ A high-performance, cloud-native API gateway and reverse proxy built with TypeSc
 
 ![Dashboard Latency Metrics](./docs/dashboard.png)
 
+![Use Walkthrough](./docs/latency.gif)
+
 ---
 
 ### Live Proxy Routing
@@ -15,7 +17,7 @@ Once the server is running, the gateway intercepts requests and dynamically mana
 ---
 
 ### Prerequisites
-Make sure you have Node.js and npm installed. You will also need a local Redis instance and  ensure the frontend and Backend services are running locally on your machine.
+Make sure you have Node.js and npm installed. You will also need a local Redis instance and ensure the frontend and backend services are running locally on your machine.
 
 ## Getting Started
 
@@ -26,66 +28,64 @@ Make sure you have Node.js and npm installed. You will also need a local Redis i
    git clone https://github.com/SaharshBhatnagar/Latency-Optimized-API-Proxy-gateway.git
    ```
 
-
 2. Navigate to the project directory:
-
-    ```Bash
-    cd Latency-Optimized-API-Proxy-gateway
-    ```
+   ```bash
+   cd Latency-Optimized-API-Proxy-gateway
+   ```
 
 3. Install dependencies:
-
-    ```Bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
 4. Create your environment file:
+   Create a .env file in the root and add your `PORT`, `REDIS_URL` and `JWT_SECRET`:
+   ```bash
+   PORT=8000
+   REDIS_URL=redis://127.0.0.1:6380
+   JWT_SECRET=your_secure_jwt_secret
+   ```
 
-    Create a .env file in the root and add your `PORT`, `REDIS_URL` and `JWT_SECRET`
-
-    > **Note:** In a production AWS environment, the `REDIS_URL` should point to your ElastiCache Primary Endpoint.
-    
+   > **Note:** In production on EC2, Redis runs containerized in Docker (`redis://127.0.0.1:6380` or `redis://127.0.0.1:6379`), eliminating managed caching service costs while keeping in-memory latency under 1ms.
 
 5. Start the development server:
-
-    ```Bash
-    npm run dev
-    ```
+   ```bash
+   npm run dev
+   ```
 
 ## Usage
 
 ### Production Build
 
 1. Compile the TypeScript Code:
-
-    ```Bash
-    npm run build
-    ```
+   ```bash
+   npm run build
+   ```
 
 2. Start the Compiled Server:
-
-    ```Bash
-    npm start
-    ```
+   ```bash
+   npm start
+   ```
 
 ### Docker Deployment
 
 The proxy can be run as a container by mapping the ports and providing an environment variable file:
 
-```Bash
+```bash
 docker build -t latency-optimized-api-proxy-gateway .
 docker run -p 8000:8000 --env-file .env latency-optimized-api-proxy-gateway
 ```
 
 If you need to connect the Docker container to a local backend network, run it via docker-compose:
 
-```Bash
+```bash
 docker compose up -d gateway
 ```
 
 ## Directory Structure
 
-```Latency-Optimized-API-Proxy/
+```plaintext
+Latency-Optimized-API-Proxy/
 ├── .github/workflows/deploy.yml
 ├── src/
 │   ├── config/              
@@ -103,18 +103,15 @@ docker compose up -d gateway
 └── tsconfig.json           
 ```
 
-
 ## CI/CD Pipeline
 
-> This repository includes a GitHub Actions workflow (`deploy.yml`) that automatically builds the Docker image and pushes it to Amazon Elastic Container Registry (ECR) upon pushes to the main branch. Ensure your AWS IAM credentials (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`) are stored safely in GitHub Repository Secrets.
-
+> This repository includes a GitHub Actions workflow (`deploy.yml`) that automatically builds the Docker image, pushes it to Amazon Elastic Container Registry (ECR), and automatically deploys to your EC2 instance via SSH upon pushes to the main branch. Ensure your AWS IAM credentials and EC2 SSH secrets are stored safely in GitHub Repository Secrets.
 
 ## Additional Documentation
 
-**Users**
-> The Redis client utilizes a singleton pattern with a 4-minute pingInterval to prevent AWS VPC silent idle connection drops.
+> The Redis client utilizes a singleton pattern with a 4-minute pingInterval to prevent idle connection drops.
 
-**Tech Stack:** TypeScript, Redis, AWS (ECR, EC2, RDS, Elasticache), Docker, Node.js, Express
+**Tech Stack:** TypeScript, Redis (Docker), AWS (ECR, EC2, RDS), Docker, Node.js, Express
 
 **Included packages:** cors, helmet, http-proxy-middleware, jsonwebtoken, and redis.
 
@@ -124,7 +121,6 @@ docker compose up -d gateway
 
 This gateway proxy is one component of a complete cloud-native ecosystem. You can explore the other microservices in this architecture here:
 
-* **Frontend:** [Dashboard Repository](https://github.com/SaharshBhatnagar/Latency-optimized-API-Proxy-frontend)
+* **Frontend:** [Dashboard Repository](https://github.com/SaharshBhatnagar/Latency-Optimized-API-Proxy-frontend)
 
-* **Backend:** [Latency Optimized API Proxy Backend](https://github.com/SaharshBhatnagar/Latency-optimized-API-Proxy-backend)
-
+* **Backend:** [Latency Optimized API Proxy Backend](https://github.com/SaharshBhatnagar/Latency-Optimized-API-Proxy-backend)
