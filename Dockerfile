@@ -9,6 +9,7 @@ RUN npm install
 COPY . .
 
 RUN npm run build
+RUN mkdir -p dist/config && cp src/config/gateway.json dist/config/
 
 FROM node:20-alpine
 
